@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flask-k8s-cronjob-api
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cronjob-manager
+  namespace: default
+rules:
+- apiGroups: ["batch"]
+  resources: ["cronjobs"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cronjob-manager-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: flask-k8s-cronjob-api
+  namespace: default
+roleRef:
+  kind: Role
+  name: cronjob-manager
+  apiGroup: rbac.authorization.k8s.io
